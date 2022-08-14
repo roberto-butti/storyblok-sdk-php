@@ -1,0 +1,7 @@
+.env
+examples/*.log
+vendor/
+/*.cache
+/*.log
+.idea/
+composer.lock
