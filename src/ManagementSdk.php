@@ -13,7 +13,6 @@ use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Message\Formatter\FullHttpMessageFormatter;
 use Http\Message\UriFactory;
 use Monolog\Handler\StreamHandler;
-use Monolog\Level;
 use Monolog\Logger;
 use StoryblokApi\Client\Endpoint\Management\Spaces;
 use StoryblokApi\Client\Endpoint\Management\Stories;
@@ -50,7 +49,7 @@ final class ManagementSdk extends BaseSdk
             new RedirectPlugin()
         );
         $logger = new Logger('http');
-        $logger->pushHandler(new StreamHandler('my.log', Level::Debug));
+        $logger->pushHandler(new StreamHandler('my.log', Logger::DEBUG));
         $this->clientBuilder->addPlugin(
             new LoggerPlugin($logger, new FullHttpMessageFormatter())
         );
