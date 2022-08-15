@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace StoryblokApi\Client\Endpoint;
 
-use StoryblokApi\Client\HttpClient\Message\ResponseMediator;
 use StoryblokApi\Client\ContentDeliverySdk;
+use StoryblokApi\Client\Endpoint\Params\StoriesParams;
 
-final class Stories
+final class Stories extends AbstractApi
 {
-    private ContentDeliverySdk $sdk;
-
     public function __construct(ContentDeliverySdk $sdk)
     {
         $this->sdk = $sdk;
@@ -21,8 +19,16 @@ final class Stories
      */
     public function all(): array
     {
-        $response = $this->sdk->getHttpClient()->get('/stories');
+        return $this->getContent('/stories');
+    }
 
-        return ResponseMediator::getContent($response);
+    /**
+     * @param StoriesParams $params
+     * @return array<mixed>
+     */
+    public function get(StoriesParams $params): array
+    {
+        $path= $params->getQueryString();
+        return $this->getContent('/stories' . $path);
     }
 }

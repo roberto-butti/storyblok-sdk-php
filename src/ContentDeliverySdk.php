@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace StoryblokApi\Client;
 
-use Http\Client\Common\HttpMethodsClientInterface;
 use Http\Client\Common\Plugin\BaseUriPlugin;
 use Http\Client\Common\Plugin\HeaderDefaultsPlugin;
 use Http\Client\Common\Plugin\QueryDefaultsPlugin;
 use Http\Client\Common\Plugin\RedirectPlugin;
-use Http\Discovery\Psr17FactoryDiscovery;
-use Http\Message\UriFactory;
 use StoryblokApi\Client\Endpoint\Stories;
-use StoryblokApi\Client\HttpClient\ClientBuilder;
+use StoryblokApi\Client\HttpClient\BaseSdk;
+use StoryblokApi\Client\HttpClient\Options;
 
 /**
  * SDK for API Storyblok integration with
@@ -20,19 +18,13 @@ use StoryblokApi\Client\HttpClient\ClientBuilder;
  * https://www.storyblok.com/docs/api/content-delivery/v2
  *
  */
-final class ContentDeliverySdk
+final class ContentDeliverySdk extends BaseSdk
 {
-    private ClientBuilder $clientBuilder;
-    private string $token;
-
-    public function __construct(ClientBuilder $clientBuilder = null, UriFactory $uriFactory = null)
+    public function __construct(Options $options = null)
     {
-        $this->clientBuilder = $clientBuilder ?: new ClientBuilder();
-        $uriFactory = $uriFactory ?: Psr17FactoryDiscovery::findUriFactory();
-
-        $this->clientBuilder->addPlugin(
-            new BaseUriPlugin($uriFactory->createUri('https://api.storyblok.com/v2/cdn'))
-        );
+        $this->options = $options ?? new Options();
+        $this->clientBuilder = $this->options->getClientBuilder();
+        $this->clientBuilder->addPlugin(new BaseUriPlugin($this->options->getUri()));
         $this->clientBuilder->addPlugin(
             new HeaderDefaultsPlugin(
                 [
@@ -47,12 +39,26 @@ final class ContentDeliverySdk
         );
     }
 
+    public function regionUs(): self
+    {
+        return $this->region("us");
+    }
+
+    public function region(string $region): self
+    {
+        $this->clientBuilder->removePlugin(BaseUriPlugin::class);
+        $this->clientBuilder->addPlugin(
+            new BaseUriPlugin($this->options->getUriFactory()->createUri('https://api-' . $region . '.storyblok.com/v2/cdn'))
+        );
+        $this->options->setUriString('https://api-' . $region . '.storyblok.com/v2/cdn');
+        return $this;
+    }
     public function token(string $token): self
     {
-        $this->token = $token;
+        //$this->token = $token;
         $this->clientBuilder->addPlugin(
             new QueryDefaultsPlugin([
-                'token' => $this->token,
+                'token' => $token,
             ])
         );
         return $this;
@@ -61,10 +67,5 @@ final class ContentDeliverySdk
     public function stories(): Stories
     {
         return new Endpoint\Stories($this);
-    }
-
-    public function getHttpClient(): HttpMethodsClientInterface
-    {
-        return $this->clientBuilder->getHttpClient();
     }
 }
