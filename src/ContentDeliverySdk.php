@@ -28,7 +28,7 @@ final class ContentDeliverySdk extends BaseSdk
         $this->clientBuilder->addPlugin(
             new HeaderDefaultsPlugin(
                 [
-                    'User-Agent' => 'PHP Custom SDK',
+                    'User-Agent' => $this->getUserAgent(),
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
                 ]
@@ -37,6 +37,11 @@ final class ContentDeliverySdk extends BaseSdk
         $this->clientBuilder->addPlugin(
             new RedirectPlugin()
         );
+    }
+
+    public static function make(): self
+    {
+        return new self();
     }
 
     public function regionUs(): self
@@ -55,7 +60,6 @@ final class ContentDeliverySdk extends BaseSdk
     }
     public function token(string $token): self
     {
-        //$this->token = $token;
         $this->clientBuilder->addPlugin(
             new QueryDefaultsPlugin([
                 'token' => $token,
