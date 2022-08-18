@@ -23,4 +23,9 @@ abstract class BaseSdk
     {
         return $this->clientBuilder->getHttpClient();
     }
+
+    public function getUserAgent(): string
+    {
+        return 'PHP Custom SDK';
+    }
 }
