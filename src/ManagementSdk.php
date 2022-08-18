@@ -27,8 +27,6 @@ use StoryblokApi\Client\HttpClient\ClientBuilder;
  */
 final class ManagementSdk extends BaseSdk
 {
-    private string $token;
-
     public function __construct(ClientBuilder $clientBuilder = null, UriFactory $uriFactory = null)
     {
         $this->clientBuilder = $clientBuilder ?: new ClientBuilder();
@@ -40,7 +38,7 @@ final class ManagementSdk extends BaseSdk
         $this->clientBuilder->addPlugin(
             new HeaderDefaultsPlugin(
                 [
-                    'User-Agent' => 'PHP Custom SDK',
+                    'User-Agent' => $this->getUserAgent(),
                     'Content-Type' => 'application/json'
                 ]
             )
@@ -55,9 +53,13 @@ final class ManagementSdk extends BaseSdk
         );
     }
 
+    public static function make(): self
+    {
+        return new self();
+    }
+
     public function token(string $token): self
     {
-        $this->token = $token;
         // We don't need to set a Bearer, because the documentation says
         // that the token is set in the Authorization header.
         // $authentication = new Bearer($this->token);
@@ -65,7 +67,7 @@ final class ManagementSdk extends BaseSdk
         $this->clientBuilder->addPlugin(
             new HeaderDefaultsPlugin(
                 [
-                    'Authorization' => $this->token,
+                    'Authorization' => $token,
                 ]
             )
         );
