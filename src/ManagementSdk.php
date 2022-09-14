@@ -53,9 +53,13 @@ final class ManagementSdk extends BaseSdk
         );
     }
 
-    public static function make(): self
+    public static function make(string $token): self
     {
-        return new self();
+        $sdk = new self();
+        if ($token) {
+            $sdk->token($token);
+        }
+        return $sdk;
     }
 
     public function token(string $token): self
