@@ -7,7 +7,8 @@ function getToken(): string
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . DIRECTORY_SEPARATOR. "../..");
     $dotenv->safeLoad();
     //$dotenv->load();
-    return (string)$_ENV['STORYBLOK_TOKEN_TEST'];
+    $keyName = 'STORYBLOK_TOKEN_TEST';
+    return (string) ($_SERVER[$keyName] ?? $_ENV[$keyName] ?? "");
 }
 
 test('ContentDeliverySdk response first level structure', function () {
