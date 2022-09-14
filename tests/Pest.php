@@ -12,7 +12,7 @@
 */
 
 // uses(Tests\TestCase::class)->in('Feature');
-
+uses()->group('integration')->in('integration');
 /*
 |--------------------------------------------------------------------------
 | Expectations

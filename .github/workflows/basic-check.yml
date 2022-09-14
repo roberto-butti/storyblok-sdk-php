@@ -42,4 +42,5 @@ jobs:
   # Set environment
         env:
           SESSION_DRIVER: array
+          STORYBLOK_TOKEN_TEST: ${{ secrets.STORYBLOK_TOKEN_TEST }}
         run: composer check
