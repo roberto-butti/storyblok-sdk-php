@@ -25,7 +25,8 @@
         "phpstan": "phpstan analyse",
         "pint": "pint",
         "php-cs-fixer": "php-cs-fixer fix src --rules @PSR12",
-        "test": "pest",
+        "test-all": "pest",
+        "test": "pest --exclude-group integration",
         "check": [
             "@pint",
             "@phpstan",
