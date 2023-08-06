@@ -47,13 +47,13 @@ $response = $sdk->stories()
 print_stories($response);
 
 $term = "home";
-$sdk = new ContentDeliverySdk("dEWjeZLMiAo4HmCMhFlOQgtt");
+$sdk = new ContentDeliverySdk($token);
 print_title("Stories sorted with term: " . $term);
 $response = $sdk->stories()
     ->draft()
     ->searchTerm($term)
-    ->sortBy("name", "asc")
-    //->language("it")
+    ->sortBy("name", SortAttribute::ASCENDING)
+    ->language("it")
     ->get();
 print_stories($response);
 $response = $sdk->stories()
