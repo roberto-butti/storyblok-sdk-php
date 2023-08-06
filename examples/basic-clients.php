@@ -1,7 +1,6 @@
 <?php
 
 use StoryblokApi\Client\ContentDeliverySdk;
-use StoryblokApi\Client\Endpoint\Params\StoriesParams;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -24,20 +23,25 @@ $dotenv->load();
 $token = (string)$_ENV['STORYBLOK_TOKEN'];
 
 print_title("All Published Stories");
-$sdk = new ContentDeliverySdk();
-$response = $sdk->token($token)->stories()->all();
+$sdk = new ContentDeliverySdk($token);
+$response = $sdk->stories()->all();
 print_stories($response);
 
 print_title("All draft Stories");
-$sdk = new ContentDeliverySdk();
-$response = $sdk->token($token)->stories()->get(StoriesParams::make()->versionDraft());
+$sdk = new ContentDeliverySdk($token);
+$response = $sdk->stories()
+    ->draft()
+    ->language("it")
+    ->get();
 print_stories($response);
 
-$term = "world";
+$term = "brand";
 print_title("Stories with term: " . $term);
-$response = $sdk->token($token)->stories()->get(
-    StoriesParams::make()->versionDraft()->searchTerm($term)
-);
+$response = $sdk->stories()
+    ->draft()
+    ->searchTerm($term)
+    ->language("it")
+    ->get();
 print_stories($response);
 
 print_title("Stories in US region");

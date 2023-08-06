@@ -16,6 +16,14 @@ test('ContentDeliverySdk initialization', function () {
     expect($s->getUriString())->toEqual("https://api-us.storyblok.com/v2/cdn");
 });
 
+test("token", function () {
+    $sdk = ContentDeliverySdk::make("aaa")->regionUs();
+    $sdk->stories()->get();
+
+    expect($sdk->getUri()->getHost())->toEqual("api-us.storyblok.com");
+    expect($sdk->getUriString())->toEqual("https://api-us.storyblok.com/v2/cdn");
+});
+
 test('ContentDeliverySdk Params', function () {
     $params = StoriesParams::make()
         ->searchTerm("test");

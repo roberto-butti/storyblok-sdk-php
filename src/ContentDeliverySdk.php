@@ -20,7 +20,7 @@ use StoryblokApi\Client\HttpClient\Options;
  */
 final class ContentDeliverySdk extends BaseSdk
 {
-    public function __construct(Options $options = null)
+    public function __construct(string $token = null, Options $options = null)
     {
         $this->options = $options ?? new Options();
         $this->clientBuilder = $this->options->getClientBuilder();
@@ -37,25 +37,38 @@ final class ContentDeliverySdk extends BaseSdk
         $this->clientBuilder->addPlugin(
             new RedirectPlugin()
         );
+        if ($token) {
+            $this->token($token);
+        }
     }
 
-    public static function make(): self
+    public static function make(string|null $token = null): self
     {
-        return new self();
+        return new self($token);
     }
 
     public function regionUs(): self
     {
         return $this->region("us");
     }
-
-    public function region(string $region): self
+    public function regionEu(): self
     {
+        return $this->region("eu");
+    }
+
+
+    public function region(string $region = ""): self
+    {
+        $hostNamePrefix = "api";
+        if (strtolower($region) === "us") {
+            $hostNamePrefix = "api-us";
+        }
+        $uriPrefix = 'https://' . $hostNamePrefix . '.storyblok.com/v2/cdn';
         $this->clientBuilder->removePlugin(BaseUriPlugin::class);
         $this->clientBuilder->addPlugin(
-            new BaseUriPlugin($this->options->getUriFactory()->createUri('https://api-' . $region . '.storyblok.com/v2/cdn'))
+            new BaseUriPlugin($this->options->getUriFactory()->createUri($uriPrefix))
         );
-        $this->options->setUriString('https://api-' . $region . '.storyblok.com/v2/cdn');
+        $this->options->setUriString($uriPrefix);
         return $this;
     }
     public function token(string $token): self

@@ -35,6 +35,24 @@ abstract class BaseParams
         return $this;
     }
 
+
+    /**
+     * @return array|string[]
+     */
+    public function getParams(): array
+    {
+        return $this->params;
+    }
+
+    public function merge(BaseParams|null $params): self
+    {
+        if (! is_null($params)) {
+            $this->params = array_merge($this->params, $params->getParams());
+        }
+
+        return $this;
+    }
+
     public function versionDraft(): self
     {
         return $this->version("draft");
@@ -43,5 +61,9 @@ abstract class BaseParams
     public function version(string $version): self
     {
         return $this->addParams("version", $version);
+    }
+    public function language(string $language): self
+    {
+        return $this->addParams("language", $language);
     }
 }
