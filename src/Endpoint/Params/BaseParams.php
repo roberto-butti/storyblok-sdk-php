@@ -9,6 +9,8 @@ namespace StoryblokApi\Client\Endpoint\Params;
  */
 abstract class BaseParams
 {
+    public const VERSION_DRAFT = 'draft';
+    public const VERSION_PUBLISHED = 'published';
     /**
      * @var array<string,string>
      */
@@ -55,7 +57,11 @@ abstract class BaseParams
 
     public function versionDraft(): self
     {
-        return $this->version("draft");
+        return $this->version(self::VERSION_DRAFT);
+    }
+    public function versionPublished(): self
+    {
+        return $this->version(self::VERSION_PUBLISHED);
     }
 
     public function version(string $version): self
