@@ -11,13 +11,12 @@ use Http\Client\Common\Plugin\LoggerPlugin;
 use Http\Client\Common\Plugin\RedirectPlugin;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Message\Formatter\FullHttpMessageFormatter;
-use Http\Message\UriFactory;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use StoryblokApi\Client\Endpoint\Management\Spaces;
 use StoryblokApi\Client\Endpoint\Management\Stories;
 use StoryblokApi\Client\HttpClient\BaseSdk;
-use StoryblokApi\Client\HttpClient\ClientBuilder;
+use StoryblokApi\Client\HttpClient\Options;
 
 /**
  * SDK for API Storyblok integration with
@@ -27,11 +26,12 @@ use StoryblokApi\Client\HttpClient\ClientBuilder;
  */
 final class ManagementSdk extends BaseSdk
 {
-    public function __construct(ClientBuilder $clientBuilder = null, UriFactory $uriFactory = null)
+    public function __construct(string $oauth_token = null, Options $options = null)
     {
-        $this->clientBuilder = $clientBuilder ?: new ClientBuilder();
-        $uriFactory = $uriFactory ?: Psr17FactoryDiscovery::findUriFactory();
-
+        $this->options = $options ?? new Options();
+        $this->clientBuilder = $this->options->getClientBuilder();
+        $this->clientBuilder->addPlugin(new BaseUriPlugin($this->options->getUri()));
+        $uriFactory = Psr17FactoryDiscovery::findUriFactory();
         $this->clientBuilder->addPlugin(
             new BaseUriPlugin($uriFactory->createUri('https://mapi.storyblok.com/v1'))
         );
@@ -51,6 +51,10 @@ final class ManagementSdk extends BaseSdk
         $this->clientBuilder->addPlugin(
             new LoggerPlugin($logger, new FullHttpMessageFormatter())
         );
+        if ($oauth_token) {
+            $this->token($oauth_token);
+        }
+
     }
 
     public static function make(string $token): self
