@@ -1,6 +1,7 @@
 <?php
 
 use StoryblokApi\Client\ContentDeliverySdk;
+use StoryblokApi\Client\Endpoint\Params\SortAttribute;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -8,6 +9,7 @@ function print_stories($stories)
 {
     foreach ($stories['stories'] as $story) {
         echo $story["id"] . " - " . $story["name"]. " (" . $story["full_slug"] . ")" .  PHP_EOL;
+
     }
 }
 function print_title($title)
@@ -41,6 +43,24 @@ $response = $sdk->stories()
     ->draft()
     ->searchTerm($term)
     ->language("it")
+    ->get();
+print_stories($response);
+
+$term = "home";
+$sdk = new ContentDeliverySdk("dEWjeZLMiAo4HmCMhFlOQgtt");
+print_title("Stories sorted with term: " . $term);
+$response = $sdk->stories()
+    ->draft()
+    ->searchTerm($term)
+    ->sortBy("name", "asc")
+    //->language("it")
+    ->get();
+print_stories($response);
+$response = $sdk->stories()
+    ->draft()
+    ->searchTerm($term)
+    ->language("it")
+    ->sortBy("name", SortAttribute::DESCENDING)
     ->get();
 print_stories($response);
 
