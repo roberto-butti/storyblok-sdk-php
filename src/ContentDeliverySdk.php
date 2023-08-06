@@ -8,6 +8,7 @@ use Http\Client\Common\Plugin\BaseUriPlugin;
 use Http\Client\Common\Plugin\HeaderDefaultsPlugin;
 use Http\Client\Common\Plugin\QueryDefaultsPlugin;
 use Http\Client\Common\Plugin\RedirectPlugin;
+use StoryblokApi\Client\Endpoint\Spaces;
 use StoryblokApi\Client\Endpoint\Stories;
 use StoryblokApi\Client\HttpClient\BaseSdk;
 use StoryblokApi\Client\HttpClient\Options;
@@ -84,5 +85,10 @@ final class ContentDeliverySdk extends BaseSdk
     public function stories(): Stories
     {
         return new Endpoint\Stories($this);
+    }
+
+    public function spaces(): Spaces
+    {
+        return new Endpoint\Spaces($this);
     }
 }

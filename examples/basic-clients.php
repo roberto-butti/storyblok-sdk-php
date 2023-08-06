@@ -12,6 +12,11 @@ function print_stories($stories)
 
     }
 }
+function print_response($response)
+{
+    var_dump($response);
+
+}
 function print_title($title)
 {
     echo str_pad("", strlen($title)+4, "-") .PHP_EOL;
@@ -23,6 +28,13 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . DIRECTORY_SEPARATOR. "..");
 $dotenv->load();
 
 $token = (string)$_ENV['STORYBLOK_TOKEN'];
+
+
+$sdk = new ContentDeliverySdk($token);
+print_title("Space: ");
+$response = $sdk->spaces()
+    ->get();
+print_response($response);
 
 print_title("All Published Stories");
 $sdk = new ContentDeliverySdk($token);
